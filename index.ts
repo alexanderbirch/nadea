@@ -52,7 +52,8 @@ $(document).ready(() => {
     loadTestsAndHints();
 
     // Update
-    update(window.location.hash ? true : false);
+    update(); // conference edition
+    //update(window.location.hash ? true : false);
 });
 
 
@@ -170,6 +171,94 @@ function loadTestsAndHints() {
     proofCodes["Test suite"] = ". The test suite collects the final proof state for all tests but no tests are provided in the index.nadea file (or the file was not found)\n";
 
     /* Get .nadea file contents */
+
+    var nadeaContents = ". The official index.nadea file\n" +
+        ".\n" +
+        "# Test 0\n" +
+        ". The default proof\n" +
+        ".\n" +
+        "OK{.}[]\n" +
+        ".\n" +
+        "# Test 1\n" +
+        ". P => P\n" +
+        "ImpI{Imp{Pre{P}{}}{Pre{P}{}}}[]:{OK{Pre{P}{}}[Pre{P}{}]}\n" +
+        ".\n" +
+        "# Test 2\n" +
+        ". ~(P ^ ~P)\n" +
+        "ImpI{Imp{Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}}{Falsity}}[]:{ImpE{Falsity}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}]:{ConE2{Imp{Pre{P}{}}{Falsity}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}]:{OK{Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}]}}{ConE1{Pre{P}{}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}]:{OK{Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Falsity}}]}}}\n" +
+        ".\n" +
+        "# Test 3\n" +
+        ". (P v Q) => (Q v P)\n" +
+        "ImpI{Imp{Dis{Pre{P}{}}{Pre{Q}{}}}{Dis{Pre{Q}{}}{Pre{P}{}}}}[]:{DisE{Dis{Pre{Q}{}}{Pre{P}{}}}[Dis{Pre{P}{}}{Pre{Q}{}}]:{OK{Dis{Pre{P}{}}{Pre{Q}{}}}[Dis{Pre{P}{}}{Pre{Q}{}}]}{DisI2{Dis{Pre{Q}{}}{Pre{P}{}}}[Dis{Pre{P}{}}{Pre{Q}{}},Pre{P}{}]:{OK{Pre{P}{}}[Dis{Pre{P}{}}{Pre{Q}{}},Pre{P}{}]}}{DisI1{Dis{Pre{Q}{}}{Pre{P}{}}}[Dis{Pre{P}{}}{Pre{Q}{}},Pre{Q}{}]:{OK{Pre{Q}{}}[Dis{Pre{P}{}}{Pre{Q}{}},Pre{Q}{}]}}}\n" +
+        ".\n" +
+        "# Test 4\n" +
+        ". P ^ (P => Q) => Q\n" +
+        "ImpI{Imp{Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}}{Pre{Q}{}}}[]:{ImpE{Pre{Q}{}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}]:{ConE2{Imp{Pre{P}{}}{Pre{Q}{}}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}]:{OK{Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}]}}{ConE1{Pre{P}{}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}]:{OK{Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}}[Con{Pre{P}{}}{Imp{Pre{P}{}}{Pre{Q}{}}}]}}}\n" +
+        ".\n" +
+        "# Test 5\n" +
+        ". (A x,y. P(x,y)) => (E x,y. P(x,y))\n" +
+        "ImpI{Imp{Uni{Uni{Pre{P}{Var{0},Var{1}}}}}{Exi{Exi{Pre{P}{Var{0},Var{1}}}}}}[]:{ExiI{Exi{Exi{Pre{P}{Var{0},Var{1}}}}}[Uni{Uni{Pre{P}{Var{0},Var{1}}}}]:{ExiI{Exi{Pre{P}{Var{0},Fun{c}{}}}}[Uni{Uni{Pre{P}{Var{0},Var{1}}}}]:{UniE{Pre{P}{Fun{b}{},Fun{c}{}}}[Uni{Uni{Pre{P}{Var{0},Var{1}}}}]{0}:{UniE{Uni{Pre{P}{Var{0},Fun{c}{}}}}[Uni{Uni{Pre{P}{Var{0},Var{1}}}}]{0}:{OK{Uni{Uni{Pre{P}{Var{1},Var{0}}}}}[Uni{Uni{Pre{P}{Var{0},Var{1}}}}]}}}}}\n" +
+        ".\n" +
+        "# Test 6\n" +
+        ". (E x. P(x)) v (A x . ~P(x))\n" +
+        ". Proof not yet completed. Sorry.\n" +
+        "OK{Dis{Exi{Pre{P}{Var{0}}}}{Uni{Imp{Pre{P}{Var{0}}}{Falsity}}}}[]\n" +
+        ".\n" +
+        "# Test 7\n" +
+        ". (A x.P(x) v A x.Q(x) => (A x. P(x) v Q(x))\n" +
+        "ImpI{Imp{Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}}}{Uni{Dis{Pre{P}{Var{0}}}{Pre{Q}{Var{0}}}}}}[]:{UniI{Uni{Dis{Pre{P}{Var{0}}}{Pre{Q}{Var{0}}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}}]{Fun{c*}{},1}:{DisE{Dis{Pre{P}{Fun{c*}{}}}{Pre{Q}{Fun{c*}{}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}}]:{OK{Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}}]}{DisI1{Dis{Pre{P}{Fun{c*}{}}}{Pre{Q}{Fun{c*}{}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{P}{Var{0}}}]:{UniE{Pre{P}{Fun{c*}{}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{P}{Var{0}}}]{0}:{OK{Uni{Pre{P}{Var{0}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{P}{Var{0}}}]}}}{DisI2{Dis{Pre{P}{Fun{c*}{}}}{Pre{Q}{Fun{c*}{}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{Q}{Var{0}}}]:{UniE{Pre{Q}{Fun{c*}{}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{Q}{Var{0}}}]{0}:{OK{Uni{Pre{Q}{Var{0}}}}[Dis{Uni{Pre{P}{Var{0}}}}{Uni{Pre{Q}{Var{0}}}},Uni{Pre{Q}{Var{0}}}]}}}}}\n" +
+        ".\n" +
+        "# Test 8\n" +
+        ". (Falsity => Falsity) => Falsity\n" +
+        "ImpI{Imp{Falsity}{Imp{Falsity}{Falsity}}}[]:{ImpI{Imp{Falsity}{Falsity}}[Falsity]:{OK{Falsity}[Falsity,Falsity]}}\n" +
+        ".\n" +
+        "# Test 9\n" +
+        ". Example containing a lot of content\n" +
+        ". Not a proof.\n" +
+        "Boole{Falsity}[]:{Boole{Falsity}[Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{Boole{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]:{OK{Falsity}[Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity},Imp{Falsity}{Falsity}]}}}}}}}}}}}\n" +
+        ".\n" +
+        "# Test 10\n" +
+        ". Extra proof\n" +
+        ".\n" +
+        "OK{.}[]\n" +
+        ".\n" +
+        "# Hint 0\n" +
+        ".\n" +
+        "OK{.}[]\n" +
+        ".\n" +
+        "# Hint 1\n" +
+        "ImpI{Imp{Falsity}{Imp{Falsity}{Falsity}}}[]:{ImpI{Imp{Falsity}{Falsity}}[Falsity]:{OK{Falsity}[Falsity,Falsity]}}\n" +
+        ".\n" +
+        "# Hint 2\n" +
+        "OK{Dis{Exi{Pre{P}{Var{0}}}}{Uni{Imp{Pre{P}{Var{0}}}{Falsity}}}}[]\n" +
+        ".\n" +
+        "# Hint 3\n" +
+        "ImpI{Imp{Pre{A}{}}{Imp{Pre{B}{}}{Pre{A}{}}}}[]:{ImpI{Imp{Pre{B}{}}{Pre{A}{}}}[Pre{A}{}]:{OK{Pre{A}{}}[Pre{A}{},Pre{B}{}]}}\n" +
+        "ImpI{Imp{Pre{A}{}}{Imp{Pre{B}{}}{Pre{A}{}}}}[]:{OK{Imp{Pre{B}{}}{Pre{A}{}}}[Pre{A}{}]}\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{B}{}}{Pre{A}{}}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{B}{}}{Pre{A}{.}}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{B}{}}{Pre{.}{.}}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{B}{}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{B}{.}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{.}{.}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{A}{.}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{A}{}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{A}{.}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{Pre{.}{.}}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{}}{Imp{.}{.}}}[]\n" +
+        "OK{Imp{Pre{A}{.}}{Imp{.}{.}}}[]\n" +
+        "OK{Imp{Pre{.}{.}}{Imp{.}{.}}}[]\n" +
+        "OK{Imp{.}{Imp{.}{.}}}[]\n" +
+        "OK{Imp{.}{.}}[]\n" +
+        "OK{.}[]\n" +
+        ".\n" +
+        "# Hint 4\n" +
+        ". Hello World\n" +
+        ".\n" +
+        "OK{.}[]\n";
+
+    readNadeaData(nadeaContents);
+    return;
 
     var xhr = new XMLHttpRequest();
 
